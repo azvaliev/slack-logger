@@ -1,0 +1,25 @@
+{
+  "name": "slack-logger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "sls offline",
+    "deploy": "sls deploy"
+  },
+  "author": "azat valiev",
+  "license": "MIT",
+  "dependencies": {
+    "json-schema-to-ts": "^2.5.2",
+    "serverless": "^3.18.2",
+    "serverless-dotenv": "^1.0.0-beta.2",
+    "serverless-offline": "^8.8.0"
+  },
+  "devDependencies": {
+    "@serverless/typescript": "^3.18.0",
+    "@types/aws-lambda": "^8.10.97",
+    "@types/serverless": "^3.12.7",
+    "serverless-plugin-typescript": "^2.1.2"
+  }
+}
