@@ -11,6 +11,8 @@
   "author": "azat valiev",
   "license": "MIT",
   "dependencies": {
+    "@middy/core": "^3.0.3",
+    "@middy/http-json-body-parser": "^3.0.3",
     "json-schema-to-ts": "^2.5.2",
     "node-fetch": "^3.2.4",
     "serverless": "^3.18.2",

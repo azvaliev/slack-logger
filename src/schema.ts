@@ -1,9 +1,10 @@
 export default {
-	type: 'string',
+	type: 'object',
 	properties: {
-		function: { type: 'string' },
-		file: { type: 'string' },
-		error: { type: 'string' },
+		location: { type: 'string' },
+		fileName: { type: 'string' },
+		log: { type: 'string' },
+		level: { type: 'string' },
 	},
-	required: ['file', 'error'],
+	required: ['fileName', 'log'],
 } as const;

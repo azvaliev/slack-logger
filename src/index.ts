@@ -1,12 +1,28 @@
+import middy from '@middy/core';
+import middyJsonBodyParser from '@middy/http-json-body-parser';
 import { formatJSONResponse, ValidatedEventAPIGatewayProxyEvent } from './lib/api-gateway.js';
+
 import schema from './schema.js';
 
-export const handler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+const colors = {
+	success: '#2eb886',
+	warning: '#fcba03',
+	error: '#ed3f18',
+	info: '#4278f5',
+};
+
+const logger: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
 	if (!process.env.SLACK_WEBHOOK) throw new Error('Slack endpoint missing');
 
 	const fetch = (await import('node-fetch')).default;
 
-	const log = JSON.parse(event.body);
+	const {
+		log, fileName, location,
+	} = event.body;
+	let { level } = event.body;
+
+	// If level is not one of the object keys or is not set, set to error
+	if (!level || !new Set(Object.keys(colors)).has(level)) level = 'error';
 
 	const response = await fetch(process.env.SLACK_WEBHOOK, {
 		method: 'POST',
@@ -16,21 +32,21 @@ export const handler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async 
 					type: 'header',
 					text: {
 						type: 'plain_text',
-						text: 'Error',
+						text: level,
 						emoji: true,
 					},
 				},
 			],
 			attachments: [
 				{
-					fallback: `Error: ${log.error} ${log.file} ${log.function}`,
-					color: '#2eb886',
-					title: 'Message:',
-					text: `This error occured in ${log.function ? `the function *${log.function}*, ` : ''}filename *${log.file}*`,
+					fallback: `${level}: ${log} ${fileName} ${location}`,
+					color: colors[level],
+					title: 'message:',
+					text: `this error occured in ${location ? `*${location}*, ` : ''}filename *${fileName}*`,
 					fields: [
 						{
-							title: 'Error Message',
-							value: `\`\`\`${log.error}\`\`\``,
+							title: 'logs:',
+							value: `\`\`\`${log}\`\`\``,
 							short: false,
 						},
 					],
@@ -46,3 +62,5 @@ export const handler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async 
 		result,
 	});
 };
+
+export const handler = middy(logger).use(middyJsonBodyParser());
