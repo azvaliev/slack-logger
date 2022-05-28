@@ -1,0 +1,29 @@
+org: # Name of your serverless org
+app: # Name of your serverless app
+# serverless.yml
+
+service: logging-bot
+provider:
+  name: aws
+  runtime: nodejs16.x
+functions:
+  logger:
+    handler: src/index.handler
+    environment: 
+      SLACK_WEBHOOK: null
+      # This link can be derived by going to https://api.slack.com/apps/ for completely free
+      # Register an app in desired server / channel, and add a webhook
+    events:
+    - httpApi:
+        path: /
+        method: POST
+plugins:
+  - serverless-offline
+  - serverless-plugin-typescript
+# Serverless offline plugin allows for offline testing by running sls offline
+custom:
+  serverless-offline:
+    noPrependStageInUrl: true
+    httpPort: 3000
+    lambdaPort: 3001
+configValidationMode: error
