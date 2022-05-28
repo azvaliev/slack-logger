@@ -44,6 +44,5 @@ export const handler: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async 
 
 	return formatJSONResponse({
 		result,
-		event,
 	});
 };
